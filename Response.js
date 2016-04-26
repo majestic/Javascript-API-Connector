@@ -79,7 +79,7 @@ function Response()
 	*/
 	this.isOK = function()
 	{
-		if ( this.code == "OK" )
+		if ( this.code == "OK" || this.code == "QueuedForProcessing" )
 		{
 			return 'OK';
 		}
