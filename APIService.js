@@ -3,6 +3,7 @@ function APIService( endpoint, appid )
 {
 	var endpoint = endpoint;
 	var appid = appid;
+	
 	/*
 		executeCommand : This method will execute the specified command as an api request.
 
@@ -12,22 +13,21 @@ function APIService( endpoint, appid )
 	*/
 	this.executeCommand = function( name, params, timeout )
 	{
-		// set up the timeout if its different to the default
-		var timeout = 5; // default
-		if (typeof(timeout) != 'undefined')
-		{
-			timeout = timeout;
-		}
-
 		// call the command
 		var xmlhttp=new XMLHttpRequest();
-		xmlhttp.open("GET",endpoint + "?app_api_key=" + encodeURIComponent(appid)
-														+ "&cmd=" + encodeURIComponent(name) 
-														+ "&Timeout=" + encodeURIComponent(timeout)
-														+ "&" + params,false);
-		xmlhttp.send();
+		
+		var params = "app_api_key=" + encodeURIComponent(appid)
+					+ "&cmd=" + encodeURIComponent(name)
+					+ "&" + params;
+		
+		xmlhttp.open("POST",endpoint,false);
+		//xmlhttp.timeout = timeout || 5;
+		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xmlhttp.send(params);
+		
 		// check that the request was carried out ok and return the response
 		var response = new Response();
+		
 		if ( xmlhttp.status == "200" )
 		{
 			response.new_ok( new XMLSerializer().serializeToString(xmlhttp.responseXML) );
@@ -36,6 +36,7 @@ function APIService( endpoint, appid )
 		{
 			response.new_failed("ConnectionError", "Problem connecting to the data source.");
 		}
+		
 		return response;
 	}
 
@@ -50,23 +51,22 @@ function APIService( endpoint, appid )
 	*/
 	this.executeOpenAppRequest = function( accesstoken, commandname, params, timeout )
 	{
-		// set up the timeout if its different to the default
-		var timeout = 5; // default
-		if (typeof(timeout) != 'undefined')
-		{
-			timeout = timeout;
-		}
-
 		// call the command
 		var xmlhttp=new XMLHttpRequest();
-		xmlhttp.open("GET",endpoint + "?accesstoken=" + encodeURIComponent(accesstoken) 
-									+ "&privatekey=" + encodeURIComponent(appid) 
-									+ "&cmd=" + encodeURIComponent(commandname) 
-									+ "&Timeout=" + encodeURIComponent(timeout) 
-									+ "&" + params,false);
-		xmlhttp.send();
+		
+		var params = "accesstoken=" + encodeURIComponent(accesstoken)
+					+ "&privatekey=" + encodeURIComponent(appid)
+					+ "&cmd=" + encodeURIComponent(commandname)
+					+ "&" + params;
+					
+		xmlhttp.open("POST",endpoint,false);
+		//xmlhttp.timeout = timeout || 5;
+		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xmlhttp.send(params);
+		
 		// check that the request was carried out ok and return the response
 		var response = new Response();
+		
 		if ( xmlhttp.status == "200" )
 		{
 			response.new_ok( new XMLSerializer().serializeToString(xmlhttp.responseXML) );
@@ -75,6 +75,7 @@ function APIService( endpoint, appid )
 		{
 			response.new_failed("ConnectionError", "Problem connecting to the data source.");
 		}
+		
 		return response;
 	}
 }
